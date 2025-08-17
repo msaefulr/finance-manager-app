@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Finance Manager • Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' }</script>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="font-inter bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur bg-white/60 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg p-2 shadow-lg">
+        💰
+      </div>
+      <div>
+        <div class="text-lg font-semibold">Finance Manager</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400">Atur keuangan pribadimu</div>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-4">
+      <a href="index.html" class="px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Dashboard</a>
+      <a href="crud.html" class="px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Transaksi</a>
+      <a href="riwayat.html" class="px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Riwayat</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <button id="mobileMenuButton" class="md:hidden p-2 rounded bg-slate-100 dark:bg-slate-800">
+        ☰
+      </button>
+      <button id="darkModeToggleTop" class="px-3 py-2 rounded bg-slate-100 dark:bg-slate-800"></button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="md:hidden hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+    <a href="index.html" class="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800">Dashboard</a>
+    <a href="crud.html" class="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800">Transaksi</a>
+    <a href="riwayat.html" class="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800">Riwayat</a>
+  </div>
+</header>
+
+<main class="pt-24 pb-20">
+  <section class="max-w-6xl mx-auto px-4">
+    <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-xl p-8 mb-8 shadow-xl overflow-hidden">
+      <div class="md:flex md:items-center md:justify-between">
+        <div>
+          <h1 class="text-2xl md:text-3xl font-bold mb-2">Kontrol Keuanganmu, Mudah & Ringkas</h1>
+          <p class="text-sm md:text-base opacity-90 max-w-xl">Catat pemasukan dan pengeluaran, lihat ringkasan data kapan saja. Minimalis dan responsif untuk penggunaan sehari-hari.</p>
+          <div class="mt-4 flex gap-3">
+            <a href="crud.html" class="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-md font-medium">Tambah Transaksi</a>
+            <a href="riwayat.html" class="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-md">Lihat Riwayat</a>
+          </div>
+        </div>
+        <div class="mt-6 md:mt-0">
+          <div class="bg-white/10 rounded-lg p-4 w-64">
+            <div class="text-xs text-white/80">Saldo Saat Ini</div>
+            <div id="heroBalance" class="text-2xl font-semibold mt-2">Rp 0</div>
+            <div class="text-xs text-white/80 mt-1">Update terakhir: <span id="lastUpdateHero">-</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-6">
+      <div class="card p-5">
+        <div class="text-sm text-slate-500">Total Pemasukan</div>
+        <div id="totalIncome" class="text-xl font-bold text-emerald-600 mt-2">Rp 0</div>
+      </div>
+      <div class="card p-5">
+        <div class="text-sm text-slate-500">Total Pengeluaran</div>
+        <div id="totalExpense" class="text-xl font-bold text-rose-600 mt-2">Rp 0</div>
+      </div>
+      <div class="card p-5">
+        <div class="text-sm text-slate-500">Saldo Akhir</div>
+        <div id="finalBalance" class="text-xl font-bold mt-2">Rp 0</div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+      <div class="card p-5">
+        <h3 class="font-semibold mb-3">Perbandingan Pemasukan vs Pengeluaran</h3>
+        <div class="h-56">
+          <canvas id="pieChart"></canvas>
+        </div>
+      </div>
+      <div class="card p-5">
+        <h3 class="font-semibold mb-3">Riwayat Saldo</h3>
+        <div class="h-56">
+          <canvas id="lineChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 items-center justify-between mb-6">
+      <div class="text-sm text-slate-600">Data disimpan di localStorage. Untuk eksport dan filter, buka halaman Riwayat.</div>
+      <div class="flex gap-3">
+        <button id="exportBtn" class="btn bg-indigo-600 text-white px-4 py-2 rounded">Export Semua</button>
+        <a href="riwayat.html" class="btn border border-slate-200 px-4 py-2 rounded">Ke Riwayat</a>
+      </div>
+    </div>
+
+  </section>
+</main>
+
+<button id="scrollToTopBtn" class="hidden fixed bottom-6 right-6 p-3 rounded-full bg-indigo-600 text-white shadow-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-opacity duration-300">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+  </svg>
+</button>
+
+<footer class="border-t border-slate-200 dark:border-slate-800 py-6">
+  <div class="max-w-6xl mx-auto px-4 text-center text-sm text-slate-500">© 2025 Finance Manager — dibuat untuk Capstone Project</div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

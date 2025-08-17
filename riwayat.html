@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Finance Manager • Riwayat</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>tailwind.config = { darkMode: 'class' }</script>
+<link rel="stylesheet" href="styles.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur bg-white/60 dark:bg-slate-900/60 border-b border-slate-200 dark:border-slate-800">
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-3">
+      <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-lg p-2 shadow-lg">
+        💰
+      </div>
+      <div>
+        <div class="text-lg font-semibold">Finance Manager</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400">Riwayat Transaksi</div>
+      </div>
+    </a>
+    <nav class="hidden md:flex items-center gap-4">
+      <a href="index.html" class="px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Dashboard</a>
+      <a href="crud.html" class="px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Transaksi</a>
+      <a href="riwayat.html" class="px-3 py-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">Riwayat</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <button id="mobileMenuButton" class="md:hidden p-2 rounded bg-slate-100 dark:bg-slate-800">
+        ☰
+      </button>
+      <button id="darkModeToggleTop" class="px-3 py-2 rounded bg-slate-100 dark:bg-slate-800"></button>
+    </div>
+  </div>
+  <div id="mobileMenu" class="md:hidden hidden bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
+    <a href="index.html" class="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800">Dashboard</a>
+    <a href="crud.html" class="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800">Transaksi</a>
+    <a href="riwayat.html" class="block px-4 py-3 hover:bg-slate-100 dark:hover:bg-slate-800">Riwayat</a>
+  </div>
+</header>
+
+<main class="pt-24 pb-16">
+  <section class="container max-w-6xl mx-auto px-4">
+    <div class="card mb-6">
+      <h2 class="text-lg font-semibold mb-3">Filter Rentang Tanggal</h2>
+      <div class="grid-cols grid-cols-sm-2 grid-cols-md-3">
+        <input id="startDate" type="date">
+        <input id="endDate" type="date">
+        <div class="flex gap-2">
+          <button id="filterBtn" class="btn bg-indigo-600 text-white">Filter</button>
+          <button id="resetFilterBtn" class="btn btn-secondary">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card mb-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="font-semibold">Riwayat Transaksi</h3>
+        <div class="flex gap-2 items-center">
+          <!-- <button id="exportRangeBtn" class="btn bg-emerald-500 text-white" disabled>Export Rentang</button> -->
+          <button id="clearHistoryBtn" class="btn bg-rose-500 text-white">Hapus Semua</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full">
+          <thead>
+            <tr>
+              <th class="text-left px-3 py-2 text-sm">Tanggal</th>
+              <th class="text-left px-3 py-2 text-sm">Keterangan</th>
+              <th class="text-right px-3 py-2 text-sm">Pemasukan</th>
+              <th class="text-right px-3 py-2 text-sm">Pengeluaran</th>
+              <th class="text-right px-3 py-2 text-sm">Saldo</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="text-center py-6 text-sm text-slate-500 dark:text-slate-400">
+  © 2025 Finance Manager - Dibuat dengan ❤
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
